@@ -1,0 +1,29 @@
+name: Snapshot Actions
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm install
+      - run: npm run dev &
+        shell: bash
+      - run: sleep 10
+      - run: ls
+      - name: Snapshot
+        run: node snapshot.js
+      - name: Stage, Commit, and Push Changes
+        run: |
+          git config --global user.name "Your Name"
+          git config --global user.email "Your Email"
+          git add .
+          git commit -m "Update snapshot"
+          git push origin main
